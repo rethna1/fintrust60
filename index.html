@@ -5,6 +5,444 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FinTrust Creations — Mutual Fund Calculators</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ULIP Calculator – FinTrust Creations</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .logo-heading-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo-heading-link img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.logo-heading-link h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+  :root {
+    --green-dark:#2e7d32;
+    --green-light:#9ccc65;
+    --accent-thumb:#4caf50;
+    --label-bg:#ebebeb;
+    --header-bg:#b4e49a;
+    --footer-bg:#f9f9f9;
+    --bar-fill:#000;
+    --bar-bg:#e0e0e0;
+    --divider:#e6e6e6;
+    --maxw:720px;
+  }
+  html,body{height:100%;margin:0;background:#f7f7f7;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#222;}
+  .wrap{width:100%;max-width:var(--maxw);margin:18px auto;padding:12px;box-sizing:border-box;}
+  .calculator{width:480px;max-width:calc(100% - 24px);margin:12px auto;background:#fff;border-radius:10px;
+    box-shadow:0 8px 26px rgba(0,0,0,0.08);overflow:hidden;}
+  .header{display:flex;align-items:center;padding:12px 14px;background:#fff;border-bottom:1px solid #eaeaea;}
+  .logo-wrap{display:flex;align-items:center;gap:12px;}
+  .round-logo{display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--green-dark),var(--green-light));color:#fff;width:64px;height:64px;
+    border-radius:8px;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.12);overflow:hidden;}
+  .round-logo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:8px;}
+  .logo-initials{font-size:1.25rem;line-height:1;}
+  .logo-text{font-size:0.8rem;font-weight:700;color:var(--green-dark);letter-spacing:0.2px;}
+  .header h1{margin:0;font-size:18px;font-weight:600;color:#222;margin-left:6px;}
+  .tabs{display:flex;gap:8px;padding:12px;background:transparent;align-items:center;flex-wrap:nowrap;border-bottom:1px solid #f2f2f2;}
+  .tab{padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;background:#fff;border:1px solid #eee;color:#333;flex:1;text-align:center;}
+  .tab.active{background:linear-gradient(90deg,var(--header-bg),#f7fff7);border-color:var(--green-dark);color:var(--green-dark);box-shadow:0 8px 20px rgba(46,125,50,0.06);}
+  .content{padding:12px;}
+  .fields{padding:6px 4px 0 4px;}
+  .field{padding:10px 6px;border-bottom:1px solid #f3f3f3;}
+  .field label{display:block;margin-bottom:8px;color:#333;font-size:13px;font-weight:700;}
+  .input-group{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #dcdcdc;border-radius:8px;overflow:hidden;padding:4px;}
+  .input-group span{background:var(--label-bg);color:#333;padding:10px 12px;font-weight:700;font-size:14px;min-width:56px;text-align:center;border-radius:6px;}
+  .input-group input[type="number"], .input-group select{border:0;width:100%;font-size:15px;padding:8px;background:#fff;outline:none;-moz-appearance:textfield;color:#222;font-weight:600;}
+  .range{width:100%;height:10px;margin-top:12px;-webkit-appearance:none;appearance:none;border-radius:6px;background:linear-gradient(to right,var(--bar-fill) 0%,var(--bar-bg) 0%);outline:none;transition:0.12s;}
+  .range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent-thumb);border:3px solid #fff;cursor:pointer;margin-top:-6px;box-shadow:0 0 8px rgba(0,0,0,0.35);}
+  .range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent-thumb);border:3px solid #fff;cursor:pointer;}
+  .result-header{background:var(--header-bg);text-align:center;color:#2a2a2a;padding:12px 14px;font-size:16px;font-weight:700;position:relative;margin-top:8px;border-radius:6px;}
+  .reset-btn{display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--green-dark);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:13px;cursor:pointer;}
+  .result{ text-align:left;font-size:15px;color:#000;font-weight:400;padding-bottom:6px;}
+  .result-row{padding:12px 14px;border-bottom:1px solid var(--divider);display:flex;justify-content:space-between;align-items:center;}
+  .result-row .label{color:#333;font-weight:700;font-size:14px;}
+  .result-row .value{font-size:18px;font-weight:800;color:#000;}
+  .chart-section{padding:14px 0;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5;text-align:center;position:relative;background:#fff;}
+  .chart-container{width:220px;height:190px;margin:0 auto;position:relative;}
+  .chart-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-size:13px;color:#000;font-weight:700;line-height:1.2;pointer-events:none;}
+  .chart-center .label{display:block;font-size:12px;color:#555;font-weight:600;}
+  .chart-legend{margin-top:8px;display:flex;justify-content:center;gap:12px;font-size:13px;color:#333;background:#fff;}
+  .legend-box{width:12px;height:12px;display:inline-block;margin-right:6px;vertical-align:middle;border-radius:3px;}
+  .table-wrapper{margin:12px 12px 18px;border-radius:8px;border:1px solid #eee;max-height:260px;overflow:auto;padding:6px;}
+  table{width:100%;border-collapse:collapse;min-width:520px;}
+  th,td{padding:8px 10px;border-bottom:1px solid #f1f1f1;text-align:center;font-size:13px;}
+  th{background:#fafafa;font-weight:700;color:#333;position:sticky;top:0;z-index:2;}
+  .card-footer{font-size:12px;color:#333;padding:12px;background:var(--footer-bg);border-top:1px solid #ccc;text-align:justify;line-height:1.45;border-radius:0 0 10px 10px;}
+  @media (max-width:520px){
+    .calculator{width:calc(100% - 20px);}
+    .chart-container{width:200px;height:160px;}
+    table{min-width:480px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="calculator" id="ulipApp">
+   <div class="header">
+  <a class="logo-heading-link" href="#">
+    <img alt="FinTrust Logo" src="https://i.postimg.cc/nzfLqfJN/IMG-4425.jpg" />
+    <h1>FinTrust ULIP Investment Planner</h1>
+  </a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="ULIP Tools">
+      <div class="tab active" data-tab="ulip" role="tab" aria-selected="true">ULIP Model</div>
+      <div class="tab" data-tab="summary" role="tab" aria-selected="false">Summary</div>
+      <div class="tab" data-tab="help" role="tab" aria-selected="false">How it works</div>
+    </div>
+
+    <div class="content">
+      <!-- ULIP Model -->
+      <div id="ulip" class="tab-content" style="display:block;">
+        <div class="fields">
+          <div class="field">
+            <label>Annual Premium (₹)</label>
+            <div class="input-group">
+              <span>₹</span>
+              <input id="premium" type="number" min="0" step="1000" value="100000">
+            </div>
+            <input id="premiumRange" class="range" type="range" min="10000" max="2000000" step="10000" value="100000">
+          </div>
+
+          <div class="field">
+            <label>Policy Term (Years)</label>
+            <div class="input-group">
+              <span>Yrs</span>
+              <input id="term" type="number" min="1" step="1" value="15">
+            </div>
+            <input id="termRange" class="range" type="range" min="1" max="40" step="1" value="15">
+          </div>
+
+          <div class="field">
+            <label>Expected Annual Return (%)</label>
+            <div class="input-group">
+              <span>%</span>
+              <input id="expReturn" type="number" min="0" step="0.1" value="8">
+            </div>
+            <input id="expReturnRange" class="range" type="range" min="0.1" max="20" step="0.1" value="8">
+          </div>
+
+          <div class="field">
+            <label>Annual Step-up in Premium (%)</label>
+            <div class="input-group">
+              <span>%</span>
+              <input id="stepup" type="number" min="0" step="0.1" value="0">
+            </div>
+            <input id="stepupRange" class="range" type="range" min="0" max="20" step="0.5" value="0">
+          </div>
+
+          <div class="field">
+            <label>Fund Charge / Annual % (management & charges)</label>
+            <div class="input-group">
+              <span>%</span>
+              <input id="fundCharge" type="number" min="0" step="0.1" value="1.5">
+            </div>
+            <input id="fundChargeRange" class="range" type="range" min="0" max="5" step="0.1" value="1.5">
+          </div>
+
+          <div class="field">
+            <label>Existing Life Cover (₹)</label>
+            <div class="input-group">
+              <span>₹</span>
+              <input id="existingCover" type="number" min="0" step="1000" value="200000">
+            </div>
+            <input id="existingCoverRange" class="range" type="range" min="0" max="10000000" step="10000" value="200000">
+          </div>
+        </div>
+
+        <div class="result-header">ULIP Results <button id="ulipReset" class="reset-btn">Reset</button></div>
+
+        <div class="result" id="ulipResults">
+          <div class="result-row"><span class="label">Total Invested</span><span class="value" id="totalInvested">₹0</span></div>
+          <div class="result-row"><span class="label">Estimated Fund Value</span><span class="value" id="fundValue">₹0</span></div>
+          <div class="result-row"><span class="label">Estimated Returns (net)</span><span class="value" id="netReturns">₹0</span></div>
+          <div class="result-row"><span class="label">Estimated Charges Paid</span><span class="value" id="chargesPaid">₹0</span></div>
+          <div class="result-row" style="border-bottom:none;"><span class="label">Recommended Death Benefit</span><span class="value" id="deathBenefit">₹0</span></div>
+          <div class="result-row" style="border-bottom:none;"><span class="label">Net Required Cover (after existing)</span><span class="value" id="netRequired">₹0</span></div>
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-container"><canvas id="ulipChart"></canvas>
+            <div class="chart-center"><span class="label">Fund Value</span><span id="ulipCenter">₹0</span></div>
+          </div>
+          <div class="chart-legend">
+            <span><span class="legend-box" style="background:#2e7d32"></span>Invested</span>
+            <span><span class="legend-box" style="background:#9ccc65"></span>Net Returns</span>
+            <span><span class="legend-box" style="background:#f59e0b"></span>Charges</span>
+          </div>
+        </div>
+
+        <div class="table-wrapper" id="ulipTable"></div>
+
+        <div class="card-footer">Model used: each annual premium is invested at (expected return - fund charge). Death benefit (example rule): <strong>max(fund value, total premiums paid × 1.05)</strong>. This is a demonstration model; insurer rules differ. © <span id="yearSpan"></span> FinTrust MF Distribution</div>
+      </div>
+
+      <!-- Summary tab - shows compact snapshots (same data as main) -->
+      <div id="summary" class="tab-content" style="display:none;">
+        <div style="padding:12px;">
+          <h3 style="margin-top:0">Quick Summary</h3>
+          <div id="summaryBox" style="font-weight:600;color:#222"></div>
+        </div>
+      </div>
+
+      <!-- Help tab -->
+      <div id="help" class="tab-content" style="display:none;">
+        <div style="padding:12px;">
+          <h3 style="margin-top:0">How this ULIP model works</h3>
+          <ul>
+            <li>Annual premium is invested each year (you can add step-ups).</li>
+            <li>Fund growth is simulated using the expected annual return, reduced by the fund charge percentage.</li>
+            <li>Estimated charges show cumulative fund charges over the term.</li>
+            <li>Recommended death benefit uses a simple rule: higher of fund value or 105% of premiums paid (common illustrative rule).</li>
+          </ul>
+          <p style="margin:8px 0 0 0">Note: This is a simplified model for planning. Actual ULIP calculations include allocation, policy administration charges, mortality charges, switching costs, partial withdrawals and other rules that vary by insurer.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* Utilities */
+function toNum(v,d=0){ const n=parseFloat(v); return isNaN(n)?d:n; }
+function fmtINR(n){ if(!isFinite(n)) n=0; return '\u20B9' + Math.round(n).toLocaleString('en-IN'); }
+function updateRangeBackground(el){
+  const min=toNum(el.min,0), max=toNum(el.max,100), val=Math.max(min, Math.min(max, toNum(el.value,min)));
+  const pct = ((val-min)/(max-min))*100;
+  el.style.background = `linear-gradient(to right, var(--bar-fill) ${pct}%, var(--bar-bg) ${pct}%)`;
+}
+function enableRange(el, handler){
+  updateRangeBackground(el);
+  el.addEventListener('input', handler, {passive:true});
+  el.addEventListener('change', handler, {passive:true});
+}
+
+/* Tabs */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+    const tab = btn.getAttribute('data-tab');
+    document.querySelectorAll('.tab-content').forEach(tc=>tc.style.display='none');
+    document.getElementById(tab).style.display='block';
+    try{ window.dispatchEvent(new Event('resize')); }catch(e){}
+  });
+});
+
+/* Elements */
+const premium = document.getElementById('premium'), premiumRange = document.getElementById('premiumRange');
+const term = document.getElementById('term'), termRange = document.getElementById('termRange');
+const expReturn = document.getElementById('expReturn'), expReturnRange = document.getElementById('expReturnRange');
+const stepup = document.getElementById('stepup'), stepupRange = document.getElementById('stepupRange');
+const fundCharge = document.getElementById('fundCharge'), fundChargeRange = document.getElementById('fundChargeRange');
+const existingCover = document.getElementById('existingCover'), existingCoverRange = document.getElementById('existingCoverRange');
+
+const totalInvestedEl = document.getElementById('totalInvested');
+const fundValueEl = document.getElementById('fundValue');
+const netReturnsEl = document.getElementById('netReturns');
+const chargesPaidEl = document.getElementById('chargesPaid');
+const deathBenefitEl = document.getElementById('deathBenefit');
+const netRequiredEl = document.getElementById('netRequired');
+const ulipCenter = document.getElementById('ulipCenter');
+const ulipTable = document.getElementById('ulipTable');
+const summaryBox = document.getElementById('summaryBox');
+
+const resetBtn = document.getElementById('ulipReset');
+
+/* Chart */
+const ctx = document.getElementById('ulipChart').getContext('2d');
+const ulipChart = new Chart(ctx, {
+  type:'doughnut',
+  data:{ labels:['Invested','Net Returns','Charges'], datasets:[{ data:[0,0,0], backgroundColor:['#2e7d32','#9ccc65','#f59e0b'], borderColor:'#fff', borderWidth:2 }] },
+  options:{ cutout:'70%', plugins:{legend:{display:false}}, maintainAspectRatio:false }
+});
+
+/* default values */
+const defaults = {
+  premium: toNum(premium.value,100000),
+  term: toNum(term.value,15),
+  expReturn: toNum(expReturn.value,8),
+  stepup: toNum(stepup.value,0),
+  fundCharge: toNum(fundCharge.value,1.5),
+  existing: toNum(existingCover.value,200000)
+};
+
+/* Calculation model:
+   - Each year user pays "annualPremium" (which may increase by stepup% each year)
+   - Each year's payment compounds at netAnnualRate = expectedReturn - fundCharge for remaining years
+   - ChargesPaid approximated as difference between gross growth and net growth (or sum of annual fees applied)
+*/
+function calculateAndRender(){
+  const P = Math.max(0, toNum(premium.value,0));
+  const Y = Math.max(1, Math.floor(toNum(term.value,1)));
+  const rGross = Math.max(0, toNum(expReturn.value,0))/100;
+  const step = Math.max(0, toNum(stepup.value,0))/100;
+  const charge = Math.max(0, toNum(fundCharge.value,0))/100;
+  const existing = Math.max(0, toNum(existingCover.value,0));
+
+  const netRate = Math.max(-0.9999, rGross - charge); // net growth after fund charge
+  let investedTotal = 0;
+  let fund = 0;
+  let chargesAccum = 0;
+  let grossFund = 0;
+
+  const tableRows = [];
+  // Assume premiums paid at beginning of year
+  let annualPremium = P;
+  for(let y=1;y<=Y;y++){
+    // Add premium at start of year
+    investedTotal += annualPremium;
+    // For net growth calculation: future value accumulation
+    // advance year by applying growth for 1 year to existing fund + added premium
+    // We'll compute both gross (using rGross) and net (using netRate) to estimate charges
+    // 1) apply gross growth
+    grossFund = (grossFund + annualPremium) * (1 + rGross);
+    // 2) apply net growth
+    fund = (fund + annualPremium) * (1 + netRate);
+    // charges approximated as difference between grossFund and fund at this year
+    const yearCharges = Math.max(0, grossFund - fund);
+    chargesAccum = yearCharges; // we will take final difference as cumulative (approx)
+    // Prepare row values (rounding)
+    tableRows.push({
+      year: y,
+      premium: Math.round(annualPremium),
+      grossFV: Math.round(grossFund),
+      netFV: Math.round(fund),
+      charges: Math.round(grossFund - fund)
+    });
+    // increase premium for next year
+    annualPremium = annualPremium * (1 + step);
+  }
+
+  // Final computed values
+  const totalInvested = Math.round(investedTotal);
+  const fundValue = Math.round(fund);
+  const grossValue = Math.round(grossFund);
+  const chargesPaid = Math.round(Math.max(0, grossValue - fundValue)); // approximate
+  const netReturns = Math.round(Math.max(0, fundValue - totalInvested));
+
+  // Death benefit example rule: max(fundValue, totalInvested * 1.05)
+  const deathBenefit = Math.round(Math.max(fundValue, totalInvested * 1.05));
+  const netRequired = Math.max(0, deathBenefit - existing);
+
+  // Render outputs
+  totalInvestedEl.textContent = fmtINR(totalInvested);
+  fundValueEl.textContent = fmtINR(fundValue);
+  netReturnsEl.textContent = fmtINR(netReturns);
+  chargesPaidEl.textContent = fmtINR(chargesPaid);
+  deathBenefitEl.textContent = fmtINR(deathBenefit);
+  netRequiredEl.textContent = fmtINR(netRequired);
+  ulipCenter.textContent = fmtINR(fundValue);
+
+  // Update chart
+  ulipChart.data.datasets[0].data = [ totalInvested, netReturns, chargesPaid ];
+  ulipChart.update();
+
+  // Build table
+  let html = '<table><thead><tr><th>Year</th><th>Premium (₹)</th><th>Gross FV (₹)</th><th>Net FV (₹)</th><th>Year Charges (₹)</th></tr></thead><tbody>';
+  for(const r of tableRows){
+    html += `<tr><td>${r.year}</td><td>${r.premium.toLocaleString('en-IN')}</td><td>${r.grossFV.toLocaleString('en-IN')}</td><td>${r.netFV.toLocaleString('en-IN')}</td><td>${r.charges.toLocaleString('en-IN')}</td></tr>`;
+  }
+  html += '</tbody></table>';
+  ulipTable.innerHTML = html;
+
+  // Summary tab
+  summaryBox.innerHTML = `
+    <div style="padding:8px">
+      <div>Total Invested: <strong>${fmtINR(totalInvested)}</strong></div>
+      <div>Fund Value: <strong>${fmtINR(fundValue)}</strong></div>
+      <div>Estimated Charges: <strong>${fmtINR(chargesPaid)}</strong></div>
+      <div>Recommended Death Benefit: <strong>${fmtINR(deathBenefit)}</strong></div>
+      <div>Net Required Cover (after existing): <strong>${fmtINR(netRequired)}</strong></div>
+    </div>
+  `;
+
+  // show/hide reset button
+  const changed = (+premium.value !== defaults.premium) || (+term.value !== defaults.term) || (+expReturn.value !== defaults.expReturn) || (+stepup.value !== defaults.stepup) || (+fundCharge.value !== defaults.fundCharge) || (+existingCover.value !== defaults.existing);
+  resetBtn.style.display = changed ? 'inline-block' : 'none';
+}
+
+/* Wire up ranges + inputs */
+const ranges = [
+  {input: premium, range: premiumRange},
+  {input: term, range: termRange},
+  {input: expReturn, range: expReturnRange},
+  {input: stepup, range: stepupRange},
+  {input: fundCharge, range: fundChargeRange},
+  {input: existingCover, range: existingCoverRange}
+];
+
+ranges.forEach(item=>{
+  const inp = item.input, r = item.range;
+  if(r){
+    updateRangeBackground(r);
+    enableRange(r, (e)=>{
+      updateRangeBackground(r);
+      inp.value = r.value;
+      calculateAndRender();
+    });
+  }
+  inp.addEventListener('input', ()=>{
+    if(r) r.value = inp.value;
+    document.querySelectorAll('.range').forEach(updateRangeBackground);
+    calculateAndRender();
+  });
+});
+
+/* Reset button (keeps layout stable — no scroll) */
+resetBtn.addEventListener('click', ()=>{
+  premium.value = defaults.premium;
+  premiumRange.value = defaults.premium;
+  term.value = defaults.term;
+  termRange.value = defaults.term;
+  expReturn.value = defaults.expReturn;
+  expReturnRange.value = defaults.expReturn;
+  stepup.value = defaults.stepup;
+  stepupRange.value = defaults.stepup;
+  fundCharge.value = defaults.fundCharge;
+  fundChargeRange.value = defaults.fundCharge;
+  existingCover.value = defaults.existing;
+  existingCoverRange.value = defaults.existing;
+  document.querySelectorAll('.range').forEach(updateRangeBackground);
+  calculateAndRender();
+  resetBtn.style.display = 'none';
+});
+
+/* initial paint */
+document.getElementById('yearSpan').innerText = new Date().getFullYear();
+document.querySelectorAll('.range').forEach(updateRangeBackground);
+calculateAndRender();
+
+/* ensure reset buttons hidden at load */
+document.addEventListener('DOMContentLoaded', ()=>{ document.querySelectorAll('.reset-btn').forEach(b=>b.style.display='none'); });
+
+</script>
+</body>
+</html>
   <style>
     :root {
       --primary:#00a37a;
@@ -402,5 +840,6 @@ function topFunction() {
 </script>
 </body>
 </html>
+
 
 
